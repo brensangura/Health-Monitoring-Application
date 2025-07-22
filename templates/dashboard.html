@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>Your Health Dashboard</h1>
+    
+    <div class="metrics-section">
+        <div class="metric-card">
+            <h3>Weight Tracker</h3>
+            <canvas id="weightChart"></canvas>
+        </div>
+        <div class="metric-card">
+            <h3>Heart Rate</h3>
+            <canvas id="heartRateChart"></canvas>
+        </div>
+    </div>
+    
+    <div class="goals-section">
+        <h2>Your Goals</h2>
+        <div class="goal-progress">
+            <label>Daily Water Intake</label>
+            <progress value="65" max="100"></progress>
+            <span>65%</span>
+        </div>
+        <div class="goal-progress">
+            <label>Weekly Exercise</label>
+            <progress value="40" max="100"></progress>
+            <span>40%</span>
+        </div>
+    </div>
+    
+    <div class="medication-reminder">
+        <h2>Medication Reminders</h2>
+        <ul>
+            {% for med in medications %}
+            <li>{{ med }}</li>
+            {% endfor %}
+        </ul>
+        <button id="addMedication">Add Medication</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+<script>
+    // Initialize charts with data passed from the server
+    const weightData = {
+        labels: {{ dates|tojson }},
+        datasets: [{
+            label: 'Weight (kg)',
+            data: {{ weights|tojson }},
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    };
+    
+    const heartRateData = {
+        labels: {{ dates|tojson }},
+        datasets: [{
+            label: 'Heart Rate (bpm)',
+            data: {{ heart_rates|tojson }},
+            borderColor: 'rgb(255, 99, 132)',
+            tension: 0.1
+        }]
+    };
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        initCharts(weightData, heartRateData);
+    });
+</script>
+{% endblock %}
