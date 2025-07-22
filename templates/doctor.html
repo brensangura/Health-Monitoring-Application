@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="doctor-container">
+    <h1>Contact a Doctor</h1>
+    
+    <div class="doctor-sections">
+        <div class="doctor-list">
+            <h2>Available Doctors</h2>
+            <ul>
+                {% for doctor in doctors %}
+                <li class="doctor-item" data-doctor-id="{{ doctor.id }}">
+                    <h3>{{ doctor.name }}</h3>
+                    <p>{{ doctor.specialty }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="doctor-details">
+            <h2 id="selectedDoctorName">Select a doctor to view details</h2>
+            <div id="doctorInfo">
+                <p id="doctorSpecialty"></p>
+                <p id="doctorAvailability"></p>
+                <p id="doctorBio"></p>
+            </div>
+            
+            <div class="messaging-section">
+                <h3>Send Message</h3>
+                <div class="message-history" id="messageHistory">
+                    <!-- Messages will appear here -->
+                </div>
+                <textarea id="messageContent" placeholder="Type your message..."></textarea>
+                <button id="sendMessageBtn">Send Message</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Doctor selection and messaging functionality
+        const doctorItems = document.querySelectorAll('.doctor-item');
+        
+        doctorItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const doctorId = this.getAttribute('data-doctor-id');
+                loadDoctorDetails(doctorId);
+                loadMessageHistory(doctorId);
+            });
+        });
+        
+        async function loadDoctorDetails(doctorId) {
+            const response = await fetch(`/get_doctor/${doctorId}`);
+            const doctor = await response.json();
+            
+            document.getElementById('selectedDoctorName').textContent = doctor.name;
+            document.getElementById('doctorSpecialty').textContent = `Specialty: ${doctor.specialty}`;
+            document.getElementById('doctorAvailability').textContent = `Availability: ${doctor.availability}`;
+            document.getElementById('doctorBio').textContent = doctor.bio;
+        }
+        
+        async function loadMessageHistory(doctorId) {
+            const response = await fetch(`/get_messages/${doctorId}`);
+            const data = await response.json();
+            
+            const messageHistory = document.getElementById('messageHistory');
+            messageHistory.innerHTML = '';
+            
+            data.messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = msg.is_from_doctor ? 'doctor-message' : 'user-message';
+                messageDiv.textContent = msg.content;
+                messageHistory.appendChild(messageDiv);
+            });
+        }
+        
+        document.getElementById('sendMessageBtn').addEventListener('click', async function() {
+            const doctorId = document.querySelector('.doctor-item.selected')?.getAttribute('data-doctor-id');
+            const content = document.getElementById('messageContent').value;
+            
+            if (!doctorId || !content) return;
+            
+            const response = await fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    doctor_id: doctorId,
+                    content: content
+                })
+            });
+            
+            if (response.ok) {
+                document.getElementById('messageContent').value = '';
+                loadMessageHistory(doctorId);
+            }
+        });
+    });
+</script>
+{% endblock %}
