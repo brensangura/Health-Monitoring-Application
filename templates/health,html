@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="health-container">
+    <h1>Health Monitor</h1>
+    
+    <div class="health-sections">
+        <div class="chatbot-section">
+            <h2>AI Health Assistant</h2>
+            <div class="chatbot-container">
+                <div class="chatbot-messages" id="chatbotMessages">
+                    <div class="bot-message">Hello! I'm your health assistant. How can I help you today?</div>
+                </div>
+                <div class="chatbot-input">
+                    <input type="text" id="userMessage" placeholder="Ask about symptoms or health tips...">
+                    <button id="sendMessage">Send</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="symptom-section">
+            <h2>Symptom Checker</h2>
+            <textarea id="symptomsInput" placeholder="Describe your symptoms..."></textarea>
+            <button id="checkSymptoms">Check Symptoms</button>
+            <div id="symptomResults"></div>
+        </div>
+        
+        <div class="health-tip">
+            <h2>Today's Health Tip</h2>
+            <div id="healthTip">{{ random_tip }}</div>
+            <button id="newTip">Get Another Tip</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initChatbot();
+    });
+</script>
+{% endblock %}
