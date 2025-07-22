@@ -1,5 +1,4 @@
-flask
-flask-sqlalchemy
-flask-login
-werkzeug
-python-dotenv
+streamlit
+pandas
+plotly-express
+sqlite3
