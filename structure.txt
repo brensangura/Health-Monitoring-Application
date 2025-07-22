@@ -1,0 +1,24 @@
+health_app/
+├── app.py                # Main application entry point
+├── models.py             # Database models
+├── dashboard.py          # Dashboard routes and logic
+├── health_monitor.py     # Health monitor routes and logic
+├── doctor_contact.py     # Doctor contact routes and logic
+├── static/
+│   ├── css/
+│   │   ├── styles.css    # Main stylesheet
+│   │   └── dashboard.css # Dashboard-specific styles
+│   └── js/
+│       ├── main.js       # Main JavaScript
+│       ├── chart.js      # Chart rendering
+│       └── chatbot.js    # Chatbot functionality
+├── templates/
+│   ├── base.html         # Base template
+│   ├── index.html        # Home page
+│   ├── login.html        # Login page
+│   ├── register.html     # Registration page
+│   ├── dashboard.html   # Dashboard page
+│   ├── health.html      # Health monitor page
+│   └── doctor.html      # Doctor contact page
+├── requirements.txt      # Python dependencies
+└── config.py             # Configuration settings
